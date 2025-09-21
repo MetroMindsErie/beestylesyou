@@ -1,14 +1,20 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import LoginPopup from '../components/LoginPopup'
+import dynamic from 'next/dynamic'
+
+// Use dynamic import with SSR disabled to prevent hydration issues
+const AdminProjects = dynamic(() => import('../components/AdminProjects'), { ssr: false })
 
 export default function Admin() {
   const [session, setSession] = useState(null)
+  const [activeTab, setActiveTab] = useState('upload')
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [instagram, setInstagram] = useState('')
   const [images, setImages] = useState([])
   const [uploading, setUploading] = useState(false)
+  const [editingProject, setEditingProject] = useState(null)
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -72,6 +78,7 @@ export default function Admin() {
       }
       
       alert('Project uploaded successfully!')
+      setActiveTab('manage')
       setTitle('')
       setDescription('')
       setInstagram('')
@@ -81,80 +88,148 @@ export default function Admin() {
       alert('Error saving project: ' + error.message)
     }
   }
+  
+  // Function to directly update a project from parent component
+  async function updateProjectHandler(id, updates) {
+    console.log('🔶 PARENT: updateProjectHandler called')
+    console.log('🔶 PARENT: ID:', id)
+    console.log('🔶 PARENT: Updates:', updates)
+    
+    try {
+      // Get the user's session to include the auth token
+      const { data: { session } } = await supabase.auth.getSession()
+      
+      if (!session) {
+        throw new Error('Not authenticated')
+      }
+      
+      // Use our API route with service role instead of direct client access
+      const response = await fetch('/api/admin/update-project', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`
+        },
+        body: JSON.stringify({ id, updates })
+      })
+      
+      const result = await response.json()
+      console.log('🔶 PARENT: API response:', result)
+      
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to update project')
+      }
+      
+      console.log('🔶 PARENT: Update successful!')
+      alert('Project updated successfully!')
+      return true
+    } catch (error) {
+      console.error('🔶 PARENT: Error in updateProjectHandler:', error)
+      alert('Error updating project: ' + error.message)
+      return false
+    }
+  }
 
   if (!session) {
     return <LoginPopup onLogin={({ session }) => setSession(session)} />
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-10">
-      <div className="max-w-2xl mx-auto bg-white p-8 rounded-xl shadow-md">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold">Upload New Project</h1>
-          <button 
-            onClick={() => supabase.auth.signOut()} 
-            className="text-sm text-gray-600 hover:underline"
-          >
-            Sign Out
-          </button>
+    <div className="min-h-screen bg-[var(--bg)] p-10">
+      <div className="max-w-4xl mx-auto">
+        <div className="flex justify-between items-center mb-8">
+          <div className="flex items-center gap-6">
+            <button
+              onClick={() => setActiveTab('upload')}
+              className={`text-lg ${activeTab === 'upload' ? 'text-black font-semibold' : 'text-gray-500'} hover:text-black`}
+            >
+              Upload Project
+            </button>
+            <button
+              onClick={() => setActiveTab('manage')}
+              className={`text-lg ${activeTab === 'manage' ? 'text-black font-semibold' : 'text-gray-500'} hover:text-black`}
+            >
+              Manage Projects
+            </button>
+            <a
+              href="/"
+              className="text-lg text-[var(--accent)] hover:underline"
+            >
+              View Public Site
+            </a>
+          </div>
+          <div className="flex items-center gap-4">
+            <button 
+              onClick={() => supabase.auth.signOut()} 
+              className="text-sm text-gray-600 hover:underline"
+            >
+              Sign Out
+            </button>
+          </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label className="block mb-2 text-sm font-semibold">Title</label>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring focus:ring-black"
-              required
-            />
-          </div>
+        {activeTab === 'upload' ? (
+          <div className="bg-white p-8 rounded-xl shadow-md">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <label className="block mb-2 text-sm font-semibold">Title</label>
+                <input
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring focus:ring-black"
+                  required
+                />
+              </div>
 
-          <div>
-            <label className="block mb-2 text-sm font-semibold">Description</label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring focus:ring-black"
-              rows="4"
-            />
-          </div>
+              <div>
+                <label className="block mb-2 text-sm font-semibold">Description</label>
+                <textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring focus:ring-black"
+                  rows="4"
+                />
+              </div>
 
-          <div>
-            <label className="block mb-2 text-sm font-semibold">Instagram Link</label>
-            <input
-              type="text"
-              value={instagram}
-              onChange={(e) => setInstagram(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring focus:ring-black"
-            />
-          </div>
+              <div>
+                <label className="block mb-2 text-sm font-semibold">Instagram Link</label>
+                <input
+                  type="text"
+                  value={instagram}
+                  onChange={(e) => setInstagram(e.target.value)}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring focus:ring-black"
+                />
+              </div>
 
-          <div>
-            <label className="block mb-2 text-sm font-semibold">Upload Images</label>
-            <input
-              type="file"
-              multiple
-              accept="image/*"
-              onChange={handleUpload}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2"
-            />
-            {uploading && <p className="text-sm text-gray-500 mt-2">Uploading...</p>}
-            <div className="grid grid-cols-3 gap-2 mt-4">
-              {images.map((url, i) => (
-                <img key={i} src={url} alt={`Upload ${i + 1}`} className="h-24 object-cover rounded-lg" />
-              ))}
-            </div>
-          </div>
+              <div>
+                <label className="block mb-2 text-sm font-semibold">Upload Images</label>
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={handleUpload}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                />
+                {uploading && <p className="text-sm text-gray-500 mt-2">Uploading...</p>}
+                <div className="grid grid-cols-3 gap-2 mt-4">
+                  {images.map((url, i) => (
+                    <img key={i} src={url} alt={`Upload ${i + 1}`} className="h-24 object-cover rounded-lg" />
+                  ))}
+                </div>
+              </div>
 
-          <button
-            type="submit"
-            className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800"
-          >
-            Save Project
-          </button>
-        </form>
+              <button
+                type="submit"
+                className="w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800"
+              >
+                Save Project
+              </button>
+            </form>
+          </div>
+        ) : (
+          <AdminProjects onUpdateProject={updateProjectHandler} />
+        )}
       </div>
     </div>
   )

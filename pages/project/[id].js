@@ -17,48 +17,67 @@ export async function getStaticProps({ params }) {
 
 export default function Project({ project }) {
   return (
-    <div className="bg-white text-black min-h-screen">
-      <header className="flex justify-between items-center px-8 py-6 border-b border-gray-200">
-        <a href="/" className="text-sm uppercase tracking-wide hover:underline">
-          ← Back
+    <div className="bg-[var(--bg)] text-[var(--text)] min-h-screen">
+      <header className="flex justify-between items-center px-12 py-8 border-b border-[var(--accent)]/10">
+        <a href="/" className="text-sm uppercase tracking-wider hover-underline">
+          ← Back to Portfolio
         </a>
-        <a
-          href="https://instagram.com/[her_ig_handle]"
-          target="_blank"
-          className="text-sm uppercase tracking-wide hover:underline"
-        >
-          Instagram
-        </a>
+        <div className="flex gap-8">
+          <a href="#images" className="text-sm uppercase tracking-wider hover-underline">Gallery</a>
+          <a
+            href="https://www.instagram.com/brookeulrich_/"
+            target="_blank"
+            className="text-sm uppercase tracking-wider hover-underline"
+          >
+            Instagram
+          </a>
+        </div>
       </header>
 
-      <main className="px-8 py-12 max-w-5xl mx-auto">
-        <h1 className="text-4xl font-bold mb-4">{project.title}</h1>
-        <p className="text-gray-600 mb-8">{project.description}</p>
+      <main className="px-12 py-16 max-w-7xl mx-auto">
+        <div className="max-w-3xl mx-auto mb-16">
+          <h1 className="text-5xl font-playfair mb-8 text-center">{project.title}</h1>
+          
+          {/* Project Info Card */}
+          <div className="bg-white/50 backdrop-blur-sm rounded-2xl p-8 shadow-lg mb-16">
+            <h2 className="text-2xl font-playfair mb-4">About This Project</h2>
+            <p className="text-lg leading-relaxed text-[var(--text)]/80">
+              {project.description}
+            </p>
+          </div>
+        </div>
 
         {/* Image Gallery */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div id="images" className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {project.image_urls?.map((url, i) => (
-            <img
-              key={i}
-              src={url}
-              alt={`${project.title}-${i}`}
-              className="rounded-xl object-cover shadow-md"
-            />
+            <div key={i} className="group relative overflow-hidden rounded-lg aspect-[3/4]">
+              <img
+                src={url}
+                alt={`${project.title}-${i}`}
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+            </div>
           ))}
         </div>
 
-        {/* Instagram Link */}
-        {project.instagram_link && (
-          <div className="mt-10">
+        {/* Project Links */}
+        <div className="mt-16 flex justify-center gap-6">
+          <a
+            href="/"
+            className="px-8 py-3 bg-[var(--text)] text-[var(--bg)] rounded-full hover:bg-[var(--text)]/80 transition-colors"
+          >
+            View All Projects
+          </a>
+          {project.instagram_link && (
             <a
               href={project.instagram_link}
               target="_blank"
-              className="inline-block px-6 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition"
+              className="px-8 py-3 bg-[var(--accent)] text-white rounded-full hover:bg-[var(--accent)]/80 transition-colors"
             >
               View on Instagram
             </a>
-          </div>
-        )}
+          )}
+        </div>
       </main>
     </div>
   )
