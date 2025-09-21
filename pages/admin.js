@@ -139,28 +139,28 @@ export default function Admin() {
   return (
     <div className="min-h-screen bg-[var(--bg)] p-10">
       <div className="max-w-4xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <div className="flex items-center gap-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+          <div className="flex flex-wrap items-center gap-3 sm:gap-6">
             <button
               onClick={() => setActiveTab('upload')}
-              className={`text-lg ${activeTab === 'upload' ? 'text-black font-semibold' : 'text-gray-500'} hover:text-black`}
+              className={`text-base sm:text-lg ${activeTab === 'upload' ? 'text-black font-semibold' : 'text-gray-500'} hover:text-black`}
             >
               Upload Project
             </button>
             <button
               onClick={() => setActiveTab('manage')}
-              className={`text-lg ${activeTab === 'manage' ? 'text-black font-semibold' : 'text-gray-500'} hover:text-black`}
+              className={`text-base sm:text-lg ${activeTab === 'manage' ? 'text-black font-semibold' : 'text-gray-500'} hover:text-black`}
             >
               Manage Projects
             </button>
             <Link
               href="/"
-              className="text-lg text-[var(--accent)] hover:underline"
+              className="text-base sm:text-lg text-[var(--accent)] hover:underline"
             >
               View Public Site
             </Link>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center">
             <button 
               onClick={() => supabase.auth.signOut()} 
               className="text-sm text-gray-600 hover:underline"

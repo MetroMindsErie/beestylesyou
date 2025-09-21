@@ -11,16 +11,16 @@ export default function Home({ projects }) {
   return (
     <div className="bg-[var(--bg)] text-[var(--text)] min-h-screen">
       {/* Navbar */}
-      <header className="flex justify-between items-center px-12 py-8 border-b border-[var(--accent)]/10">
-        <h1 className="text-3xl font-playfair tracking-wide">Brooke Ulrich</h1>
-        <nav className="flex gap-8">
-          <Link href="#work" className="text-sm uppercase tracking-wider hover-underline">Portfolio</Link>
-          <Link href="#about" className="text-sm uppercase tracking-wider hover-underline">About</Link>
+      <header className="flex justify-between items-center px-4 sm:px-8 md:px-12 py-8 border-b border-[var(--accent)]/10">
+        <h1 className="text-2xl sm:text-3xl font-playfair tracking-wide">Brooke Ulrich</h1>
+        <nav className="flex gap-4 sm:gap-8">
+          <Link href="#work" className="text-xs sm:text-sm uppercase tracking-wider hover-underline">Portfolio</Link>
+          <Link href="#about" className="text-xs sm:text-sm uppercase tracking-wider hover-underline">About</Link>
           <a
             href="https://www.instagram.com/brookeulrich_/"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-sm uppercase tracking-wider hover-underline"
+            className="text-xs sm:text-sm uppercase tracking-wider hover-underline"
           >
             Instagram
           </a>
@@ -28,16 +28,16 @@ export default function Home({ projects }) {
       </header>
 
       {/* Hero Section */}
-      <section className="px-12 py-24 text-center max-w-3xl mx-auto">
-        <h2 className="text-5xl font-playfair mb-6">Fashion Stylist & Creative Director</h2>
-        <p className="text-lg text-[var(--text)]/70 max-w-2xl mx-auto">
+      <section className="px-4 sm:px-8 md:px-12 py-12 sm:py-16 md:py-24 text-center max-w-3xl mx-auto">
+        <h2 className="text-3xl md:text-4xl lg:text-5xl font-playfair mb-6">Fashion Stylist & Creative Director</h2>
+        <p className="text-base md:text-lg text-[var(--text)]/70 max-w-2xl mx-auto">
           Crafting visual narratives through editorial styling, creative direction, and fashion storytelling.
         </p>
       </section>
 
       {/* Project Grid */}
-      <main id="work" className="px-12 pb-24">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+      <main id="work" className="px-4 sm:px-8 md:px-12 pb-12 sm:pb-16 md:pb-24">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 md:gap-12">
           {projects?.map((p) => (
             <article key={p.id} className="project-card group">
               <div className="aspect-[3/4] w-full relative">
@@ -77,10 +77,10 @@ export default function Home({ projects }) {
       </main>
 
       {/* About Section */}
-      <section id="about" className="px-12 py-24 bg-[var(--accent)]/5 border-t border-[var(--accent)]/10">
+      <section id="about" className="px-4 sm:px-8 md:px-12 py-12 sm:py-16 md:py-24 bg-[var(--accent)]/5 border-t border-[var(--accent)]/10">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl font-playfair mb-8">About Me</h2>
-          <div className="prose prose-lg mx-auto text-[var(--text)]/80">
+          <h2 className="text-2xl md:text-3xl font-playfair mb-6 md:mb-8">About Me</h2>
+          <div className="prose md:prose-lg mx-auto text-[var(--text)]/80">
             <p className="mb-6">
               As a fashion stylist and creative director based in Los Angeles, I blend contemporary aesthetics 
               with timeless elegance to create compelling visual narratives.
