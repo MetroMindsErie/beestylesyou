@@ -1,4 +1,6 @@
 import { supabase } from '../../lib/supabase'
+import Link from 'next/link'
+import Image from 'next/image'
 
 export async function getStaticPaths() {
   const { data: projects } = await supabase.from('projects').select('id')
@@ -19,14 +21,15 @@ export default function Project({ project }) {
   return (
     <div className="bg-[var(--bg)] text-[var(--text)] min-h-screen">
       <header className="flex justify-between items-center px-12 py-8 border-b border-[var(--accent)]/10">
-        <a href="/" className="text-sm uppercase tracking-wider hover-underline">
+        <Link href="/" className="text-sm uppercase tracking-wider hover-underline">
           ← Back to Portfolio
-        </a>
+        </Link>
         <div className="flex gap-8">
           <a href="#images" className="text-sm uppercase tracking-wider hover-underline">Gallery</a>
           <a
             href="https://www.instagram.com/brookeulrich_/"
             target="_blank"
+            rel="noopener noreferrer"
             className="text-sm uppercase tracking-wider hover-underline"
           >
             Instagram
@@ -51,10 +54,12 @@ export default function Project({ project }) {
         <div id="images" className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {project.image_urls?.map((url, i) => (
             <div key={i} className="group relative overflow-hidden rounded-lg aspect-[3/4]">
-              <img
+              <Image
                 src={url}
                 alt={`${project.title}-${i}`}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
               />
             </div>
           ))}
@@ -62,16 +67,17 @@ export default function Project({ project }) {
 
         {/* Project Links */}
         <div className="mt-16 flex justify-center gap-6">
-          <a
+          <Link
             href="/"
             className="px-8 py-3 bg-[var(--text)] text-[var(--bg)] rounded-full hover:bg-[var(--text)]/80 transition-colors"
           >
             View All Projects
-          </a>
+          </Link>
           {project.instagram_link && (
             <a
               href={project.instagram_link}
               target="_blank"
+              rel="noopener noreferrer"
               className="px-8 py-3 bg-[var(--accent)] text-white rounded-full hover:bg-[var(--accent)]/80 transition-colors"
             >
               View on Instagram

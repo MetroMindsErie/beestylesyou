@@ -1,4 +1,6 @@
 import { supabase } from '../lib/supabase'
+import Link from 'next/link'
+import Image from 'next/image'
 
 export async function getStaticProps() {
   const { data: projects } = await supabase.from('projects').select('*')
@@ -12,11 +14,12 @@ export default function Home({ projects }) {
       <header className="flex justify-between items-center px-12 py-8 border-b border-[var(--accent)]/10">
         <h1 className="text-3xl font-playfair tracking-wide">Brooke Ulrich</h1>
         <nav className="flex gap-8">
-          <a href="#work" className="text-sm uppercase tracking-wider hover-underline">Portfolio</a>
-          <a href="#about" className="text-sm uppercase tracking-wider hover-underline">About</a>
+          <Link href="#work" className="text-sm uppercase tracking-wider hover-underline">Portfolio</Link>
+          <Link href="#about" className="text-sm uppercase tracking-wider hover-underline">About</Link>
           <a
             href="https://www.instagram.com/brookeulrich_/"
             target="_blank"
+            rel="noopener noreferrer"
             className="text-sm uppercase tracking-wider hover-underline"
           >
             Instagram
@@ -37,26 +40,29 @@ export default function Home({ projects }) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
           {projects?.map((p) => (
             <article key={p.id} className="project-card group">
-              <div className="aspect-[3/4] w-full">
-                <img
+              <div className="aspect-[3/4] w-full relative">
+                <Image
                   src={p.image_urls?.[0]}
                   alt={p.title}
-                  className="w-full h-full object-cover"
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  className="object-cover"
                 />
-                <div className="project-card-content backdrop-blur-sm">
+                <div className="project-card-content">
                   <h3 className="text-white text-xl font-playfair mb-3">{p.title}</h3>
                   <p className="text-white/90 text-sm leading-relaxed line-clamp-3 mb-6">{p.description}</p>
                   <div className="flex gap-4">
-                    <a
+                    <Link
                       href={`/project/${p.id}`}
                       className="px-4 py-2 bg-white/90 text-black text-sm rounded-full hover:bg-white transition-colors"
                     >
                       Read More
-                    </a>
+                    </Link>
                     {p.instagram_link && (
                       <a
                         href={p.instagram_link}
                         target="_blank"
+                        rel="noopener noreferrer"
                         className="px-4 py-2 bg-black/50 text-white text-sm rounded-full hover:bg-black/70 transition-colors"
                       >
                         Instagram
@@ -88,6 +94,7 @@ export default function Home({ projects }) {
               <a 
                 href="https://www.instagram.com/brookeulrich_/" 
                 target="_blank"
+                rel="noopener noreferrer"
                 className="text-[var(--accent)] hover-underline"
               >
                 Instagram

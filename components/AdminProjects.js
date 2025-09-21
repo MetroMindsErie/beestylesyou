@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
+import Link from 'next/link'
 
 export default function AdminProjects({ onUpdateProject }) {
   const [projects, setProjects] = useState([])
@@ -127,13 +128,13 @@ export default function AdminProjects({ onUpdateProject }) {
                     <h3 className="text-xl font-semibold mb-2">{project.title}</h3>
                     <p className="text-gray-600 line-clamp-2 mb-4">{project.description}</p>
                     <div className="flex gap-4">
-                      <a 
+                      <Link 
                         href={`/project/${project.id}`}
                         target="_blank"
                         className="text-sm text-[var(--accent)] hover-underline"
                       >
                         View Live
-                      </a>
+                      </Link>
                       {project.instagram_link && (
                         <a 
                           href={project.instagram_link}

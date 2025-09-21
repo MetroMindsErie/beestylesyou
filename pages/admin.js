@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import LoginPopup from '../components/LoginPopup'
 import dynamic from 'next/dynamic'
+import Link from 'next/link'
+import Image from 'next/image'
 
 // Use dynamic import with SSR disabled to prevent hydration issues
 const AdminProjects = dynamic(() => import('../components/AdminProjects'), { ssr: false })
@@ -151,12 +153,12 @@ export default function Admin() {
             >
               Manage Projects
             </button>
-            <a
+            <Link
               href="/"
               className="text-lg text-[var(--accent)] hover:underline"
             >
               View Public Site
-            </a>
+            </Link>
           </div>
           <div className="flex items-center gap-4">
             <button 
@@ -214,7 +216,15 @@ export default function Admin() {
                 {uploading && <p className="text-sm text-gray-500 mt-2">Uploading...</p>}
                 <div className="grid grid-cols-3 gap-2 mt-4">
                   {images.map((url, i) => (
-                    <img key={i} src={url} alt={`Upload ${i + 1}`} className="h-24 object-cover rounded-lg" />
+                    <div key={i} className="relative h-24 rounded-lg overflow-hidden">
+                      <Image 
+                        src={url} 
+                        alt={`Upload ${i + 1}`} 
+                        fill 
+                        sizes="(max-width: 768px) 33vw, 20vw"
+                        className="object-cover" 
+                      />
+                    </div>
                   ))}
                 </div>
               </div>
