@@ -14,7 +14,14 @@ export async function getStaticProps({ params }) {
     .select('*')
     .eq('id', params.id)
     .single()
-  return { props: { project: data } }
+  
+  return { 
+    props: { 
+      project: data 
+    },
+    // Re-generate at most once every 60 seconds
+    revalidate: 60
+  }
 }
 
 export default function Project({ project }) {

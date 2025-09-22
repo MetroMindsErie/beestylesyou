@@ -99,6 +99,26 @@ export default function AdminProjects({ onUpdateProject }) {
         return
       }
       
+      // Trigger revalidation to update the public site
+      try {
+        console.log('Triggering revalidation after project deletion')
+        const revalidateResponse = await fetch('/api/revalidate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        
+        const revalidateResult = await revalidateResponse.json()
+        console.log('Revalidation result:', revalidateResult)
+        
+        if (!revalidateResponse.ok) {
+          console.warn('Revalidation API returned error:', revalidateResult)
+        }
+      } catch (revalidateError) {
+        console.warn('Failed to revalidate after delete:', revalidateError)
+      }
+      
       alert('Project deleted successfully!')
       fetchProjects()
     } catch (error) {

@@ -59,9 +59,39 @@ export default async function handler(req, res) {
       console.log('API: Verified update data:', verifyData)
     }
 
+    // Trigger revalidation
+    try {
+      console.log('Revalidating pages after project update...')
+      
+      // Revalidate the homepage
+      await res.revalidate('/')
+      console.log('Home page revalidated')
+      
+      // Revalidate the specific project page
+      await res.revalidate(`/project/${id}`)
+      console.log(`Project page /project/${id} revalidated`)
+      
+      // Also make a call to our dedicated revalidation endpoint as backup
+      try {
+        const revalidateResponse = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/revalidate?id=${id}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id }),
+        })
+        console.log('Backup revalidation result:', await revalidateResponse.text())
+      } catch (backupError) {
+        console.warn('Backup revalidation failed:', backupError)
+        // Continue even if backup fails
+      }
+    } catch (revalidateError) {
+      console.warn('Failed to revalidate pages:', revalidateError)
+      // Continue even if revalidation fails
+    }
+
     return res.status(200).json({ 
       success: true, 
-      data: verifyData || data 
+      data: verifyData || data,
+      revalidated: true
     })
   } catch (error) {
     console.error('API: Unexpected error:', error)

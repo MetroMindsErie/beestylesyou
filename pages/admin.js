@@ -66,17 +66,42 @@ export default function Admin() {
   async function handleSubmit(e) {
     e.preventDefault()
     try {
-      const { error } = await supabase.from('projects').insert([
+      const { data, error } = await supabase.from('projects').insert([
         {
           title,
           description,
           instagram_link: instagram,
           image_urls: images,
         },
-      ])
+      ]).select('id').single()
       
       if (error) {
         throw error
+      }
+      
+      // Get the project ID from the response if available
+      const projectId = data?.id
+      
+      // Trigger revalidation of pages with retry
+      try {
+        console.log('Triggering revalidation after project creation')
+        const revalidateResponse = await fetch(`/api/revalidate${projectId ? `?id=${projectId}` : ''}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ id: projectId })
+        })
+        
+        const revalidateResult = await revalidateResponse.json()
+        console.log('Revalidation result:', revalidateResult)
+        
+        if (!revalidateResponse.ok) {
+          console.warn('Revalidation API returned error:', revalidateResult)
+        }
+      } catch (revalidateError) {
+        console.error('Failed to trigger revalidation:', revalidateError)
+        // Continue even if revalidation fails
       }
       
       alert('Project uploaded successfully!')

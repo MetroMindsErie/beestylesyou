@@ -3,8 +3,18 @@ import Link from 'next/link'
 import Image from 'next/image'
 
 export async function getStaticProps() {
-  const { data: projects } = await supabase.from('projects').select('*')
-  return { props: { projects } }
+  const { data: projects } = await supabase
+    .from('projects')
+    .select('*')
+    .order('created_at', { ascending: false })
+  
+  return { 
+    props: { 
+      projects: projects || [] 
+    },
+    // Re-generate at most once every 60 seconds
+    revalidate: 60
+  }
 }
 
 export default function Home({ projects }) {
