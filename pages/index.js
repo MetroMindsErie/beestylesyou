@@ -92,7 +92,7 @@ export default function Home({ projects }) {
           <h2 className="text-2xl md:text-3xl font-playfair mb-6 md:mb-8">About Me</h2>
           <div className="prose md:prose-lg mx-auto text-[var(--text)]/80">
             <p className="mb-6">
-              As a fashion stylist and creative director based in Cleveland, Ohio, I blend contemporary aesthetics 
+              As a fashion stylist and creative director based in Cleveland, I blend contemporary aesthetics 
               with timeless elegance to create compelling visual narratives.
             </p>
             <p className="mb-6">
